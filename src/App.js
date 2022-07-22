@@ -3,6 +3,8 @@ import {
   Button,
   useDisclosure,
   HStack,
+  VStack,
+  Text
 } from '@chakra-ui/react';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import WalletModal from './Component/Modal'
@@ -38,6 +40,15 @@ function App() {
     refreshState();
     deactivate();
   };
+  const truncateAddress = (address) => {
+  if (!address) return "No Account";
+  const match = address.match(
+    /^(0x[a-zA-Z0-9]{2})[a-zA-Z0-9]+([a-zA-Z0-9]{2})$/
+  );
+  if (!match) return address;
+  return `${match[1]}…${match[2]}`;
+};
+
   const {
     library,
     chainId,
@@ -53,15 +64,19 @@ function App() {
     <HStack w="100%" justifyContent="right">
     <ColorModeSwitcher></ColorModeSwitcher>
     </HStack>
-    <HStack w="100%" justifyContent="center">
-    {!active ? (
-            <Button onClick={onOpen}>Connect Wallet</Button>
-          ) : (
-            <Button onClick={disconnect}>Disconnect</Button>
-          )}
-    </HStack>
+    <VStack>
+        <HStack w="100%" justifyContent="center">
+        {!active ? (
+                <Button onClick={onOpen}>Connect Wallet</Button>
+              ) : (
+                <Button onClick={disconnect}>Disconnect</Button>
+              )}
+        </HStack>
+        <HStack justifyContent="center">
+          <Text>{`Account: ${truncateAddress(account)}`}</Text>
+        </HStack>
+    </VStack>
     <WalletModal isOpen={isOpen} closeModal={onClose}/>
-    
   </>
   );
 }
